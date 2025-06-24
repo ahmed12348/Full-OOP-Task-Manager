@@ -1,4 +1,17 @@
-<?php //if (session_status() === PHP_SESSION_NONE) session_start(); ?>
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ✅ حمّل الكلاسات المطلوبة قبل unserialize
+require_once __DIR__ . '/../classes/User.php';
+require_once __DIR__ . '/../classes/AdminUser.php';
+
+$user = null;
+if (isset($_SESSION['user'])) {
+    $user = unserialize($_SESSION['user']);
+}
+?>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -22,7 +35,7 @@
 
             <?php if (isset($_SESSION['user'])): ?>
                 <span class="text-white mx-3">
-                    👤 <?= htmlspecialchars($_SESSION['user']['name']) ?>
+                    👤 <?= htmlspecialchars($user->getName()) ?> | 🛡️ الدور: <?= htmlspecialchars($user->getRole()) ?>
                 </span>
                 <a class="btn btn-danger" href="/TaskManagerOOP/pages/logout.php">🚪 تسجيل الخروج</a>
             <?php else: ?>

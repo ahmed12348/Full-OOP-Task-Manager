@@ -1,30 +1,32 @@
 <?php
+//require_once 'AdminUser.php';
+//require_once __DIR__ . '/User.php';
+require_once __DIR__ . '/AdminUser.php';
 class Auth {
-    public static function login(PDO $pdo, $email, $password)
-    {
+    public static function login(PDO $pdo, $email, $password) {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password'])) {
-            // ✅ حفظ بيانات المستخدم في الجلسة
-            $_SESSION['user'] = [
-                'id' => $user['id'],
-                'email' => $user['email'],
-                'name' => $user['name'] ?? '',
-            ];
+        if ($userData && password_verify($password, $userData['password'])) {
+            if ($userData['role'] === 'admin') {
+                $user = new AdminUser($userData['name'], $userData['email'], '', $userData['id']);
+            } else {
+                $user = new User($userData['name'], $userData['email'], '', $userData['id']);
+            }
+
+            $_SESSION['user'] = serialize($user); // ✅ Store as string
             return true;
         }
 
         return false;
     }
 
-
     public static function logout() {
-    session_destroy();
+        session_destroy();
     }
 
     public static function check() {
-        return isset($_SESSION['user']['id']);
+        return isset($_SESSION['user']);
     }
 }

@@ -7,7 +7,7 @@ class Task
     private $isDone;
     private $userId;
     private  $created_at;
-    public function __construct($title, $userId, $isDone = 0, $id ,$created_at)
+    public function __construct($title, $userId, $isDone = 0,   $id = null ,$created_at = null)
     {
         $this->title = $title;
         $this->userId = $userId;
@@ -16,8 +16,9 @@ class Task
         $this->created_at = $created_at;
 
     }
+
     public function getId(): int {
-        return $this->id;
+        return (int) $this->id;
     }
     public function getTitle()
     {
@@ -54,5 +55,12 @@ class Task
             $tasks[]  = new Task($row['title'], $row['user_id'], $row['is_done'], $row['id'],$row['created_at'] ?? null);
         }
         return $tasks;
+    }
+    public function getFormattedDate()
+    {
+        if (!empty($this->created_at) && strtotime($this->created_at)) {
+            return date('Y-m-d', strtotime($this->created_at));
+        }
+        return 'تاريخ غير صالح';
     }
 }

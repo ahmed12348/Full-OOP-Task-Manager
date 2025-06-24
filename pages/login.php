@@ -10,16 +10,7 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
-
     if (Auth::login($pdo, $email, $password)) {
-//        if (isset($_SESSION['user'])) {
-//            echo '<pre>';
-//            print_r($_SESSION['user']);
-//            echo '</pre>';
-//        } else {
-//            echo '⚠️ لم يتم تسجيل الجلسة.';
-//        };
-
         header('Location: dashboard.php');
         exit;
     } else {

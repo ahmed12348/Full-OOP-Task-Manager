@@ -1,8 +1,9 @@
 <?php
 require_once '../classes/Task.php';
 require_once '../templates/header.php';
-
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['user'])) {
     header('Location: login.php');
     exit;
